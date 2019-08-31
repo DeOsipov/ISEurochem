@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace test
 {
-    class CSVParser : IParser
+    class CSVParser : IParserInListOfObject, IParserInStringArray
     {
         public List<DocumentType> ParseDataBase(string filePath, string regex, out string[] header)
         {            
@@ -36,6 +36,23 @@ namespace test
                     tempDoc.modificationUserId = splitLine[counter++];
 
                     tempList.Add(tempDoc);
+                }
+            }
+            return tempList;
+        }
+
+        public List<string[]> ParseForTableView(string filePath, string regex)
+        {
+            List<string[]> tempList = new List<string[]> { };
+            Regex CSVParser = new Regex(regex);
+
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] splitLine = CSVParser.Split(line);
+                    tempList.Add(splitLine);
                 }
             }
             return tempList;

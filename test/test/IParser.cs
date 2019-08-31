@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace test
 {
-    interface IParser
+    interface IParserInListOfObject
     {
         List<DocumentType> ParseDataBase(string filePath, string regex, out string[] header);
+    }
+
+    interface IParserInStringArray
+    {
+        List<string[]> ParseForTableView(string filePath, string regex);
     }
 }
