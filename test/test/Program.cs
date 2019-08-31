@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.IO;
 
 namespace test
 {
@@ -11,14 +10,13 @@ namespace test
         static void Main()
         {
             IParser Parser = new CSVParser();
-            string filePath = @"..\..\..\..\DocumentType.csv";
-            string regex = ";";
-
-            List<string[]> DocList = Parser.ParseDataBase(filePath, regex);
+            List<string[]> DocList = Parser.ParseDataBase(@"..\..\..\..\DocumentType.csv", ";");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Form1 form = new Form1();
+            form.MakeTable(DocList);
+            Application.Run(form);
         }
     }
 }
