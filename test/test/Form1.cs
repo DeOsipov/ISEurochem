@@ -17,23 +17,25 @@ namespace test
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        public void FillNodes(List<DocumentType> list)
         {
-
+            for (int i = 1; i < list.Count - 1; i++)
+            {
+                if (IsShow(list[i]))
+                {
+                    TreeNode node = new TreeNode { Text = list[i].name };
+                    treeView1.Nodes.Add(node);
+                }
+            }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private bool IsShow(DocumentType doc)
         {
+            if (doc.name != "" && doc.state == 0)
+                return true;
+            return false;
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
+        private void Form1_Load(object sender, EventArgs e) { }
     }
 }

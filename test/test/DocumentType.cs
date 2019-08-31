@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace test
 {
-    class DocumentType
+    public class DocumentType
     {
         public int id;
         public string name;                //TODO main/must have

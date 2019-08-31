@@ -14,12 +14,13 @@ namespace test
             string filePath = @"..\..\..\..\DocumentType.csv";
             string regex = ";";
 
-            List<DocumentType> DocList = Parser.ParseDataBase(filePath, regex, out string[] header);
-            MessageBox.Show(header[1]);
+            List<DocumentType> docList = Parser.ParseDataBase(filePath, regex, out string[] header);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Form1 form = new Form1();
+            form.FillNodes(docList);
+            Application.Run(form);
         }
     }
 }
