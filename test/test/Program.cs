@@ -10,12 +10,13 @@ namespace test
         static void Main()
         {
             IParser Parser = new CSVParser();
-            List<string[]> DocList = Parser.ParseDataBase(@"..\..\..\..\DocumentType.csv", ";");
+            List<string[]> docList = Parser.ParseDataBase(@"..\..\..\..\DocumentType.csv", ";");    
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form1 form = new Form1();
-            form.MakeTable(DocList);
+            form.MakeTable(docList);
+            form.FillDriveNodes(docList);
             Application.Run(form);
         }
     }

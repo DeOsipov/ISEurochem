@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using System.IO;
 
 namespace test
 {
@@ -10,6 +11,25 @@ namespace test
         public Form1()
         {
             InitializeComponent();
+        }
+
+        public void FillDriveNodes(List<string[]> list)
+        {
+            for (int i = 1; i < list.Count - 1; i++)
+            {
+                if (IsShow(list[i]))
+                {
+                    TreeNode node = new TreeNode { Text = list[i][1] };
+                    treeView1.Nodes.Add(node);
+                }                
+            }
+        }
+
+        private bool IsShow(string[] doc)
+        {
+            if (doc[1] != "" && doc[7] == "0")
+                return true;
+            return false;
         }
 
         private void Form1_Load(object sender, EventArgs e) { }
@@ -27,7 +47,7 @@ namespace test
 
             dataGridView1.DataSource = dataSet.Tables[0];
         }
-        
+
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
     }
 }
