@@ -52,6 +52,7 @@
 
         #endregion
         private System.Windows.Forms.BindingSource documentTypeBindingSource;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
-

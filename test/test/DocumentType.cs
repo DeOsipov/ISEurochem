@@ -8,14 +8,14 @@ namespace test
 {
     class DocumentType
     {
-        public int id;
+        public string id;
         public string name;                //TODO main/must have
-        public int parentId;
+        public string parentId;
         public string acronym;
         public string note;
         public string loadingClass;     //TODO if null -> dont load
-        public int imageId;
-        public int state;                  //TODO 0 -> active, 250 -> not active
+        public string imageId;
+        public string state;                  //TODO 0 -> active, 250 -> not active
         public string modificationDate;
         public string modificationUserId;
     }

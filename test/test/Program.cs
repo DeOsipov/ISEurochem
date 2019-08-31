@@ -14,8 +14,7 @@ namespace test
             string filePath = @"..\..\..\..\DocumentType.csv";
             string regex = ";";
 
-            List<DocumentType> DocList = Parser.ParseDataBase(filePath, regex, out string[] header);
-            MessageBox.Show(header[1]);
+            List<string[]> DocList = Parser.ParseDataBase(filePath, regex);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -8,6 +8,6 @@ namespace test
 {
     interface IParser
     {
-        List<DocumentType> ParseDataBase(string filePath, string regex, out string[] header);
+        List<string[]> ParseDataBase(string filePath, string regex);
     }
 }
