@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.IO;
 
 namespace test
 {
@@ -15,6 +14,10 @@ namespace test
             string regex = ";";
 
             List<DocumentType> docList = Parser.ParseDataBase(filePath, regex, out string[] header);
+
+            IComparer<DocumentType> name = new NameComparer();
+            docList.Sort(name);
+
             List<string[]> stringDocList = Parser.ParseForTableView(filePath, regex);
 
             Application.EnableVisualStyles();
