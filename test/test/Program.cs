@@ -10,16 +10,18 @@ namespace test
         [STAThread]
         static void Main()
         {
-            IParser Parser = new CSVParser();
+            CSVParser Parser = new CSVParser();
             string filePath = @"..\..\..\..\DocumentType.csv";
             string regex = ";";
 
             List<DocumentType> docList = Parser.ParseDataBase(filePath, regex, out string[] header);
+            List<string[]> stringDocList = Parser.ParseForTableView(filePath, regex);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form1 form = new Form1();
             form.FillNodes(docList);
+            form.MakeTable(stringDocList);
             Application.Run(form);
         }
     }
