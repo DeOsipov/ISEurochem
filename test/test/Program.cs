@@ -23,10 +23,7 @@ namespace test
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Form1 form = new Form1();
-            form.FillNodes(docList);
-            form.MakeTable(stringDocList);
-            Application.Run(form);
+            Application.Run(new Form1(docList, stringDocList));
         }
     }
 }
