@@ -16,44 +16,44 @@ namespace test
         {
             InitializeComponent();
             MakeTable(stringDocList);
-            treeView1.BeforeExpand += treeView1_BeforeExpand;
-            FillNodes(docList);
+            FillTreeViewNodes(BuildTree(docList));
         }
 
         private void Form1_Load(object sender, EventArgs e) { }
 
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
-        private void FillNodes(List<DocumentType> list)
+        static List<DocumentType> BuildTree(List<DocumentType> nodes)
         {
-            for (int i = 1; i < list.Count - 1; i++)
+            var nodeMap = nodes.ToDictionary(node => node.id);
+            var rootNodes = new List<DocumentType>();
+
+            foreach (var node in nodes)
             {
-                if (IsShow(list[i]))
+                if (nodeMap.TryGetValue(node.parentId, out DocumentType parent))
                 {
-                    TreeNode node = new TreeNode { Text = list[i].name };
-                    treeView1.Nodes.Add(node);
-                }
+                    foreach(var n in nodes)
+                        if (n.id == node.parentId)
+                        {
+                            parent = n;
+                            break;
+                        }                            
+                    parent.child.Add(node);
+                }                    
+                else
+                    rootNodes.Add(node);
             }
+            return rootNodes;
         }
 
-        void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        public void FillTreeViewNodes(List<DocumentType> list)
         {
-            e.Node.Nodes.Clear();
-
-            //string[] dirs;
-            //    if (Directory.Exists(e.Node.FullPath))
-            //    {
-            //        dirs = Directory.GetDirectories(e.Node.FullPath);
-            //        if (dirs.Length != 0)
-            //        {
-            //            for (int i = 0; i < dirs.Length; i++)
-            //            {
-            //                TreeNode dirNode = new TreeNode(new DirectoryInfo(dirs[i]).Name);
-            //                FillTreeNode(dirNode, dirs[i]);
-            //                e.Node.Nodes.Add(dirNode);
-            //            }
-            //        }
-            //    }
+            for (int i = 0; i < list.Count; i++)
+                if (IsShow(list[i]))
+                {
+                    var node = new TreeNode { Text = list[i].name };
+                    treeView1.Nodes.Add(node);
+                }
         }
 
         private bool IsShow(DocumentType doc)
@@ -63,6 +63,14 @@ namespace test
             return false;
         }
 
+        private bool HasChild(List<DocumentType> docList)
+        {
+            for (int i = 1; i < docList.Count; i++)
+                if (docList[0].parentId != docList[i].parentId)
+                    return true;
+            return false;
+        }
+        
         private void MakeTable(List<string[]> DocList)
         {
             DataSet dataSet = new DataSet();
@@ -71,10 +79,11 @@ namespace test
             for (int i = 0; i < DocList[0].Length; i++)
                 dataSet.Tables[0].Columns.Add(DocList[0][i]);
 
+
             for (int i = 1; i < DocList.Count; i++)
                 dataSet.Tables[0].Rows.Add(DocList[i]);
 
             dataGridView1.DataSource = dataSet.Tables[0];
-        }        
+        }
     }
 }

@@ -14,12 +14,12 @@ namespace test
             string filePath = @"..\..\..\..\DocumentType.csv";
             string regex = ";";
 
+            List<string[]> stringDocList = Parser.ParseForTableView(filePath, regex);
+
             List<DocumentType> docList = Parser.ParseDataBase(filePath, regex, out string[] header);
 
             IComparer<DocumentType> nameComparer = new NameComparer();
             docList.Sort(nameComparer);
-
-            List<string[]> stringDocList = Parser.ParseForTableView(filePath, regex);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
