@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace test
 {
     public class DocumentType
     {
-        public int id;
-        public string name;                //TODO main/must have
-        public int parentId;
-        public string acronym;
-        public string note;
-        public string loadingClass;     //TODO if null -> dont load
-        public int imageId;
-        public int state;                  //TODO 0 -> active, 250 -> not active
-        public string modificationDate;
-        public string modificationUserId;
+        internal int id;
+        internal string name;                //TODO main/must have
+        internal int parentId;
+        internal string acronym;
+        internal string note;
+        internal string loadingClass;     //TODO if null -> dont load
+        internal int imageId;
+        internal int state;                  //TODO 0 -> active, 250 -> not active
+        internal string modificationDate;
+        internal string modificationUserId;
+        internal List<DocumentType> child;
     }
 }
