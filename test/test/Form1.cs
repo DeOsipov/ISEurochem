@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Windows.Forms;
+using Word = Microsoft.Office.Interop.Word;
+using System.Reflection;
+using System.IO;
 
 namespace test
 {
@@ -104,6 +106,16 @@ namespace test
                 dataSet.Tables[0].Rows.Add(DocList[i]);
 
             dataGridView1.DataSource = dataSet.Tables[0];
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            object oMissing = Missing.Value;
+            string path = Directory.GetCurrentDirectory();
+            object oTemplate = path.Substring(0, path.Length - 19) + "statement.doc";
+            Word._Application oWord = new Word.Application { Visible = true };
+            Word._Document oDoc;
+            oDoc = oWord.Documents.Add(ref oTemplate, ref oMissing, ref oMissing, ref oMissing);
         }
     }
 }
