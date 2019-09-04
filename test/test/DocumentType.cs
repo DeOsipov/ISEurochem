@@ -14,6 +14,6 @@ namespace test
         internal int state;                  //TODO 0 -> active, 250 -> not active
         internal string modificationDate;
         internal string modificationUserId;
-        internal List<DocumentType> child;
+        internal List<DocumentType> child = new List<DocumentType>();
     }
 }

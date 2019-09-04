@@ -18,6 +18,8 @@ namespace test
 
             List<DocumentType> docList = Parser.ParseDataBase(filePath, regex, out string[] header);
 
+            var temp = new temp();
+            temp.F(docList);
             IComparer<DocumentType> nameComparer = new NameComparer();
             docList.Sort(nameComparer);
 

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace test
@@ -32,14 +28,14 @@ namespace test
             {
                 if (nodeMap.TryGetValue(node.parentId, out DocumentType parent))
                 {
-                    foreach(var n in nodes)
+                    foreach (var n in nodes)
                         if (n.id == node.parentId)
                         {
                             parent = n;
                             break;
-                        }                            
+                        }
                     parent.child.Add(node);
-                }                    
+                }
                 else
                     rootNodes.Add(node);
             }
@@ -52,8 +48,18 @@ namespace test
                 if (IsShow(list[i]))
                 {
                     var node = new TreeNode { Text = list[i].name };
+                    FillNode(node, list[i]);
                     treeView1.Nodes.Add(node);
                 }
+        }
+
+        private void FillNode(TreeNode node, DocumentType doc)
+        {
+            foreach (var n in doc.child)
+            {
+                var childNode = new TreeNode() { Text = doc.name };
+                node.Nodes.Add(childNode);
+            }
         }
 
         private bool IsShow(DocumentType doc)
@@ -63,11 +69,10 @@ namespace test
             return false;
         }
 
-        private bool HasChild(List<DocumentType> docList)
+        private bool HasChild(DocumentType doc)
         {
-            for (int i = 1; i < docList.Count; i++)
-                if (docList[0].parentId != docList[i].parentId)
-                    return true;
+            if (doc.child != null)
+                return true;
             return false;
         }
         
