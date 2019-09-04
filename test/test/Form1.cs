@@ -8,58 +8,65 @@ namespace test
 {
     public partial class Form1 : Form
     {
-        public Form1(List<DocumentType> docList, List<string[]> stringDocList)
+        public Form1(List<DocumentType> docList, List<string[]> stringDocList, IComparer<DocumentType> nameComparer)
         {
             InitializeComponent();
             MakeTable(stringDocList);
-            FillTreeViewNodes(BuildTree(docList));
+            FillTreeViewNodes(BuildTree(SortByParentId(docList), nameComparer));
         }
 
         private void Form1_Load(object sender, EventArgs e) { }
 
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
-        static List<DocumentType> BuildTree(List<DocumentType> nodes)
+        List<DocumentType> BuildTree(List<DocumentType> sortList, IComparer<DocumentType> nameComparer)
         {
-            var nodeMap = nodes.ToDictionary(node => node.id);
             var rootNodes = new List<DocumentType>();
 
-            foreach (var node in nodes)
-            {
-                if (nodeMap.TryGetValue(node.parentId, out DocumentType parent))
-                {
-                    foreach (var n in nodes)
-                        if (n.id == node.parentId)
-                        {
-                            parent = n;
-                            break;
-                        }
+            foreach (var node in sortList)
+            {          
+                var parent = GetParent(sortList, node);
+                if (parent != null)
                     parent.child.Add(node);
-                }
                 else
                     rootNodes.Add(node);
             }
+            
+            foreach (var elem in rootNodes)
+                Sort(elem, nameComparer);
+            rootNodes.Sort(nameComparer);
             return rootNodes;
+        }
+
+        void Sort(DocumentType doc, IComparer<DocumentType> nameComparer)
+        {
+            if (doc.child.Count != 0)
+                foreach (var elem in doc.child)
+                    Sort(elem, nameComparer);
+            doc.child.Sort(nameComparer);
         }
 
         public void FillTreeViewNodes(List<DocumentType> list)
         {
-            for (int i = 0; i < list.Count; i++)
-                if (IsShow(list[i]))
+            foreach(var doc in list)
+                if (IsShow(doc))
                 {
-                    var node = new TreeNode { Text = list[i].name };
-                    FillNode(node, list[i]);
+                    var node = new TreeNode { Text = doc.name };
+                    FillNode(node, doc);
                     treeView1.Nodes.Add(node);
                 }
         }
 
         private void FillNode(TreeNode node, DocumentType doc)
         {
-            foreach (var n in doc.child)
-            {
-                var childNode = new TreeNode() { Text = doc.name };
-                node.Nodes.Add(childNode);
-            }
+            if (doc.child.Count != 0)
+                foreach (var elem in doc.child)
+                    if (IsShow(elem))
+                    {
+                        var childNode = new TreeNode() { Text = elem.name };
+                        FillNode(childNode, elem);
+                        node.Nodes.Add(childNode);
+                    }  
         }
 
         private bool IsShow(DocumentType doc)
@@ -69,13 +76,21 @@ namespace test
             return false;
         }
 
-        private bool HasChild(DocumentType doc)
+        DocumentType GetParent(List<DocumentType> list, DocumentType doc)
         {
-            if (doc.child != null)
-                return true;
-            return false;
+            foreach (var elem in list)
+                if (doc.parentId == elem.id && elem.id != 1)
+                    return elem;
+            return null;
         }
-        
+
+        List<DocumentType> SortByParentId(List<DocumentType> docList)
+        {
+            IComparer<DocumentType> parentIDComparer = new ParentIDComparer();
+            docList.Sort(parentIDComparer);
+            return docList;
+        }
+
         private void MakeTable(List<string[]> DocList)
         {
             DataSet dataSet = new DataSet();
