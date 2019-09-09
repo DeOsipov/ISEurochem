@@ -14,6 +14,7 @@ namespace test
         {
             InitializeComponent();
             MakeTable(stringDocList);
+            treeView1.AfterSelect += treeView1_AfterSelect;
             FillTreeViewNodes(BuildTree(SortByParentId(docList), nameComparer));
         }
 
@@ -53,7 +54,7 @@ namespace test
             foreach(var doc in list)
                 if (IsShow(doc))
                 {
-                    var node = new TreeNode { Text = doc.name };
+                    var node = new MyTreeNode { Text = doc.name, Id = doc.id, LoadingClass = doc.loadingClass };
                     FillNode(node, doc);
                     treeView1.Nodes.Add(node);
                 }
@@ -106,16 +107,42 @@ namespace test
                 dataSet.Tables[0].Rows.Add(DocList[i]);
 
             dataGridView1.DataSource = dataSet.Tables[0];
+        }        
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            MyTreeNode node = (MyTreeNode)e.Node;
+            if ((e.Action) == TreeViewAction.ByMouse)
+                GetForm(node);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void GetForm(MyTreeNode doc)
         {
-            object oMissing = Missing.Value;
-            string path = Directory.GetCurrentDirectory();
-            object oTemplate = path.Substring(0, path.Length - 19) + "statement.doc";
-            Word._Application oWord = new Word.Application { Visible = true };
-            Word._Document oDoc;
-            oDoc = oWord.Documents.Add(ref oTemplate, ref oMissing, ref oMissing, ref oMissing);
+            var form = new FmVBase();
+
+            if (form.GetForm(doc) != null)
+                OpenWord(form);
+            else
+                MessageBox.Show("Don't have a form.");
+        }
+
+        private void OpenWord(FmVBase form)
+        {
+            try
+            {
+                int LengthOfUnusingPath = 19;
+                object oMissing = Missing.Value;
+                string path = Directory.GetCurrentDirectory();
+                object oTemplate = path.Substring(0, path.Length - LengthOfUnusingPath) + form.Path;
+                Word._Application oWord = new Word.Application { Visible = true };
+                Word._Document oDoc;
+                oDoc = oWord.Documents.Add(ref oTemplate, ref oMissing, ref oMissing, ref oMissing);
+            }
+            catch
+            {
+                MessageBox.Show("File is missing");
+            }
+            
         }
     }
 }
