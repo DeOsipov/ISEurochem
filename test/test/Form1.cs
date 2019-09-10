@@ -126,5 +126,11 @@ namespace test
             else
                 MessageBox.Show("Don't have a form.");
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form form = new Form2();
+            form.Show();
+        }
     }
 }
