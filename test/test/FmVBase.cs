@@ -1,10 +1,15 @@
-﻿namespace test
+﻿using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
+using Word = Microsoft.Office.Interop.Word;
+
+namespace test
 {
     class FmVBase
     {
-        public string Path { get; set; }
+        internal string Path { get; set; }        
 
-        internal FmVBase GetForm(MyTreeNode doc) //TODO NyTreeNode -> DocumentType
+        internal FmVBase GetForm(MyTreeNode doc)
         {
             FmVBase form = null;
             switch (doc.LoadingClass)
@@ -26,33 +31,56 @@
                     break;
             }
             return form;
+        }        
+
+        internal void TryOpenWord(FmVBase form)
+        {
+            try
+            {
+                RunWordApp(form);
+            }
+            catch
+            {
+                MessageBox.Show("File is missing");
+            }
+        }
+
+        void RunWordApp(FmVBase form)
+        {
+            int LengthOfUnusingPath = 19;
+            object oMissing = Missing.Value;
+            string path = Directory.GetCurrentDirectory();
+            object oTemplate = path.Substring(0, path.Length - LengthOfUnusingPath) + form.Path;
+            Word._Application oWord = new Word.Application { Visible = true };
+            Word._Document oDoc;
+            oDoc = oWord.Documents.Add(ref oTemplate, ref oMissing, ref oMissing, ref oMissing);
         }
     }
 
     class FmVMemorandum : FmVBase
     {
-        public FmVMemorandum(string path)
+        internal FmVMemorandum(string path)
         {
             Path = path;
         }
     }
     class FmVStatement : FmVBase
     {
-        public FmVStatement(string path)
+        internal FmVStatement(string path)
         {
             Path = path;
         }
     }
     class FmVRequest : FmVBase
     {
-        public FmVRequest(string path)
+        internal FmVRequest(string path)
         {
             Path = path;
         }
     }
     class FmVBill : FmVBase
     {
-        public FmVBill(string path)
+        internal FmVBill(string path)
         {
             Path = path;
         }
