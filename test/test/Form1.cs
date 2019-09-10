@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace test
@@ -12,26 +11,27 @@ namespace test
         {
             InitializeComponent();
             MakeTable(stringDocList);
+            treeView1.NodeMouseDoubleClick += treeView1_NodeMouseDoubleClick;
             FillTreeViewNodes(BuildTree(SortByParentId(docList), nameComparer));
         }
 
-        private void Form1_Load(object sender, EventArgs e) { }
+        void Form1_Load(object sender, EventArgs e) { }
 
-        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+        void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
         List<DocumentType> BuildTree(List<DocumentType> sortList, IComparer<DocumentType> nameComparer)
         {
             var rootNodes = new List<DocumentType>();
 
             foreach (var node in sortList)
-            {          
+            {
                 var parent = GetParent(sortList, node);
                 if (parent != null)
                     parent.child.Add(node);
                 else
                     rootNodes.Add(node);
             }
-            
+
             foreach (var elem in rootNodes)
                 Sort(elem, nameComparer);
             rootNodes.Sort(nameComparer);
@@ -46,30 +46,35 @@ namespace test
             doc.child.Sort(nameComparer);
         }
 
-        public void FillTreeViewNodes(List<DocumentType> list)
+        void FillTreeViewNodes(List<DocumentType> list)
         {
-            foreach(var doc in list)
+            foreach (var doc in list)
                 if (IsShow(doc))
                 {
-                    var node = new TreeNode { Text = doc.name };
+                    var node = GetArgs(doc);
                     FillNode(node, doc);
                     treeView1.Nodes.Add(node);
                 }
         }
 
-        private void FillNode(TreeNode node, DocumentType doc)
+        void FillNode(TreeNode node, DocumentType doc)
         {
             if (doc.child.Count != 0)
                 foreach (var elem in doc.child)
                     if (IsShow(elem))
                     {
-                        var childNode = new TreeNode() { Text = elem.name };
+                        var childNode = GetArgs(elem);
                         FillNode(childNode, elem);
                         node.Nodes.Add(childNode);
-                    }  
+                    }
         }
 
-        private bool IsShow(DocumentType doc)
+        MyTreeNode GetArgs(DocumentType doc)
+        {
+            return new MyTreeNode() { Text = doc.name, Id = doc.id, LoadingClass = doc.loadingClass };
+        }
+
+        bool IsShow(DocumentType doc)
         {
             if (doc.name != "" && doc.state == 0)
                 return true;
@@ -91,7 +96,7 @@ namespace test
             return docList;
         }
 
-        private void MakeTable(List<string[]> DocList)
+        void MakeTable(List<string[]> DocList)
         {
             DataSet dataSet = new DataSet();
             dataSet.Tables.Add("temp");
@@ -104,6 +109,22 @@ namespace test
                 dataSet.Tables[0].Rows.Add(DocList[i]);
 
             dataGridView1.DataSource = dataSet.Tables[0];
+        }
+
+        void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            MyTreeNode node = (MyTreeNode)e.Node;
+            var form = new FmVBase();
+            form = form.GetForm(node);
+            TryGetForm(form);
+        } //TODO delete double run
+
+        internal void TryGetForm(FmVBase form)
+        {
+            if (form != null)
+                form.TryOpenWord(form);
+            else
+                MessageBox.Show("Don't have a form.");
         }
     }
 }
